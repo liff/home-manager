@@ -98,6 +98,8 @@ in
   config = mkIf cfg.enable {
     home.packages = [ pkgs.isync ];
 
+    programs.notmuch.new.ignore = [ ".uidvalidity" ".mbsyncstate" ];
+
     home.file.".mbsyncrc".text =
       let
         accounts =
