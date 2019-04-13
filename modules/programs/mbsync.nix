@@ -166,7 +166,7 @@ in
 
     programs.notmuch.new.ignore = [ ".uidvalidity" ".mbsyncstate" ];
 
-    home.file.".mbsyncrc".text =
+    xdg.configFile."mbsync".text =
       let
         accountsConfig = map genAccountConfig mbsyncAccounts;
         groupsConfig = mapAttrsToList genGroupConfig cfg.groups;

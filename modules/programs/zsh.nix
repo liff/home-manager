@@ -6,6 +6,8 @@ let
 
   cfg = config.programs.zsh;
 
+  systemd = config.systemd.user;
+
   relToDotDir = file: (optionalString (cfg.dotDir != null) (cfg.dotDir + "/")) + file;
 
   pluginsDir = if cfg.dotDir != null then
@@ -298,7 +300,7 @@ in
       '';
     })
 
-    (mkIf (cfg.dotDir != null) {
+    (mkIf (cfg.dotDir != null && !(builtins.hasAttr "ZDOTDIR" systemd.sessionVariables)) {
       home.file."${relToDotDir ".zshenv"}".text = ''
         ZDOTDIR=${zdotdir}
       '';

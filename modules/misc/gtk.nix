@@ -116,6 +116,15 @@ in
             <filename>~/.gtkrc-2.0</filename>.
           '';
         };
+
+        useXdgLocation = mkOption {
+          type = types.bool;
+          default = false;
+          example = true;
+          description = ''
+            Store gtkrc for GTK+ 2 in $XDG_CONFIG_HOME.
+          '';
+        };
       };
 
       gtk3 = {
@@ -165,6 +174,12 @@ in
 
       optionalPackage = opt:
         optional (opt != null && opt.package != null) opt.package;
+
+      gtk2RcContent =
+        concatStringsSep "\n" (
+          mapAttrsToList formatGtk2Option ini
+        ) + "\n" + cfg2.extraConfig;
+
     in
       {
         home.packages =
@@ -172,10 +187,17 @@ in
           ++ optionalPackage cfg.theme
           ++ optionalPackage cfg.iconTheme;
 
-        home.file.".gtkrc-2.0".text =
-          concatStringsSep "\n" (
-            mapAttrsToList formatGtk2Option ini
-          ) + "\n" + cfg2.extraConfig;
+        home.file.".gtkrc-2.0" = mkIf (!cfg2.useXdgLocation) {
+          text = gtk2RcContent;
+        };
+
+        xdg.configFile."gtk-2.0/gtkrc" = mkIf cfg2.useXdgLocation {
+          text = gtk2RcContent;
+        };
+
+        home.sessionVariables = mkIf cfg2.useXdgLocation {
+          GTK2_RC_FILES = "$XDG_CONFIG_HOME/gtk-2.0/gtkrc";
+        };
 
         xdg.configFile."gtk-3.0/settings.ini".text =
           toGtk3Ini { Settings = ini // cfg3.extraConfig; };
