@@ -10,7 +10,7 @@ in
 
 {
   options.programs.skim = {
-    enable = mkEnableOption "Fuzzy Finder in rust!";
+    enable = mkEnableOption "skim - a command-line fuzzy finder";
 
     defaultCommand = mkOption {
       type = types.nullOr types.str;
@@ -25,7 +25,7 @@ in
     defaultOptions = mkOption {
       type = types.listOf types.str;
       default = [];
-      example = [ "--height 40%" "--border" ];
+      example = [ "--height 40%" "--prompt ⟫" ];
       description = ''
         Extra command line options given to skim by default.
       '';
@@ -72,7 +72,7 @@ in
     historyWidgetOptions = mkOption {
       type = types.listOf types.str;
       default = [];
-      example = [ "--sort" "--exact" ];
+      example = [ "--tac" "--exact" ];
       description = ''
         Command line options for the CTRL-R keybinding.
       '';
